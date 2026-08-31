@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai-reliability-control-plane
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: ai-reliability-control-plane
+  template:
+    metadata:
+      labels:
+        app: ai-reliability-control-plane
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/nagaraju2030/ai-platform-reliability-control-plane:latest
+          ports:
+            - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: control-plane-secrets
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai-reliability-control-plane
+spec:
+  selector:
+    app: ai-reliability-control-plane
+  ports:
+    - port: 80
+      targetPort: 8000
