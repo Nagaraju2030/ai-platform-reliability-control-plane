@@ -1,0 +1,14 @@
+[
+  {
+    "service": "llm-gateway",
+    "availability": 99.99,
+    "p95_latency_ms": 850,
+    "error_rate": 0.002
+  },
+  {
+    "service": "enterprise-rag-api",
+    "availability": 98.8,
+    "p95_latency_ms": 4200,
+    "error_rate": 0.06
+  }
+]
